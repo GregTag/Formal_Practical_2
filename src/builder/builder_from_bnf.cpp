@@ -5,12 +5,30 @@ BuilderFromBNF::BuilderFromBNF() : _input(nullptr), _grammar(nullptr) {}
 BuilderFromBNF::BuilderFromBNF(std::istream& stream)
     : _input(stream.rdbuf()), _grammar(std::make_shared<Grammar>()) {}
 
-void BuilderFromBNF::reset(std::istream& stream) {
-  _input.rdbuf(stream.rdbuf());
-  _grammar = std::make_shared<Grammar>();
+BuilderFromBNF::BuilderFromBNF(const std::string& string)
+    : _buf(string), _input(&_buf), _grammar(std::make_shared<Grammar>()) {}
+
+std::shared_ptr<Grammar> BuilderFromBNF::build(std::istream& stream) {
+  return reset(stream).readRules().getResult();
+}
+std::shared_ptr<Grammar> BuilderFromBNF::build(const std::string& string) {
+  return reset(string).readRules().getResult();
 }
 
-void BuilderFromBNF::readRules() {
+BuilderFromBNF& BuilderFromBNF::reset(std::istream& stream) {
+  _input.rdbuf(stream.rdbuf());
+  _grammar = std::make_shared<Grammar>();
+  return *this;
+}
+
+BuilderFromBNF& BuilderFromBNF::reset(const std::string& string) {
+  _buf.str(string);
+  _input.rdbuf(&_buf);
+  _grammar = std::make_shared<Grammar>();
+  return *this;
+}
+
+BuilderFromBNF& BuilderFromBNF::readRules() {
   std::string line;
   std::istringstream stream;
 
@@ -41,7 +59,10 @@ void BuilderFromBNF::readRules() {
         case '"':
           if (std::getline(stream, token, '"').eof())
             throw std::invalid_argument("BNF syntax error");
-          rule.push_back(_grammar->addSymbol(token, false));
+          for (char character : token) {
+            rule.push_back(
+                _grammar->addSymbol(std::string(1, character), false));
+          }
           break;
 
         case '|':
@@ -54,6 +75,7 @@ void BuilderFromBNF::readRules() {
     }
     _grammar->addProduction(symbol_id, std::move(rule));
   }
+  return *this;
 }
 
 std::shared_ptr<Grammar> BuilderFromBNF::getResult() {

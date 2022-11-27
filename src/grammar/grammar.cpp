@@ -31,6 +31,16 @@ void Grammar::setStartingNonterminal(size_t nonterminal) {
   _starting_nonterminal = nonterminal;
 }
 
+size_t Grammar::makeSingleStartRule(const std::string& symbol) {
+  if (_alphabet->testSymbol(symbol))
+    throw std::invalid_argument("New nonterminal cannot be from the alphabet.");
+  size_t s_new = addSymbol(symbol, true);
+  size_t s_old = getStartingNonterminal();
+  addProduction(s_new, std::vector<size_t>(1, s_old));
+  setStartingNonterminal(s_new);
+  return _productions.size() - 1;
+}
+
 const GrammarAlphabet& Grammar::getAlphabet() const { return *_alphabet; }
 
 const std::vector<Production>& Grammar::getProductions() const {

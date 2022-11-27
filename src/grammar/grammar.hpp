@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include <stdexcept>
 #include <vector>
 
 #include "simple_alphabet.hpp"
@@ -23,6 +22,7 @@ class Grammar {
   void addProduction(size_t, const std::vector<size_t>&);
   void addProduction(size_t, std::vector<size_t>&&);
   void setStartingNonterminal(size_t);
+  size_t makeSingleStartRule(const std::string&);
   const GrammarAlphabet& getAlphabet() const;
   const std::vector<Production>& getProductions() const;
   size_t getStartingNonterminal() const;
