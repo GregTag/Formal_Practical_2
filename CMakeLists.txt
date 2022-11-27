@@ -41,7 +41,7 @@ include_directories(${INCLUDES_DIRS})
 file(GLOB_RECURSE SOURCES src/*.cpp)
 file(GLOB_RECURSE TESTS tests/*.cpp)
 
-add_executable(parser main.cpp ${SOURCES})
+add_executable(earley earley.cpp ${SOURCES})
 add_executable(test ${TESTS} ${SOURCES})
 
 target_link_libraries(test gtest_main gtest)

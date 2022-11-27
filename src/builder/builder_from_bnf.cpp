@@ -8,6 +8,10 @@ BuilderFromBNF::BuilderFromBNF(std::istream& stream)
 BuilderFromBNF::BuilderFromBNF(const std::string& string)
     : _buf(string), _input(&_buf), _grammar(std::make_shared<Grammar>()) {}
 
+std::shared_ptr<Grammar> BuilderFromBNF::build() {
+  return readRules().getResult();
+}
+
 std::shared_ptr<Grammar> BuilderFromBNF::build(std::istream& stream) {
   return reset(stream).readRules().getResult();
 }

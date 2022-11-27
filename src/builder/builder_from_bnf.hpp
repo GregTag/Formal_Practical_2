@@ -11,14 +11,16 @@ class BuilderFromBNF {
   BuilderFromBNF(std::istream&);
   BuilderFromBNF(const std::string&);
 
+  std::shared_ptr<Grammar> build();
   std::shared_ptr<Grammar> build(std::istream&);
   std::shared_ptr<Grammar> build(const std::string&);
+
+ private:
   BuilderFromBNF& reset(std::istream&);
   BuilderFromBNF& reset(const std::string&);
   BuilderFromBNF& readRules();
   std::shared_ptr<Grammar> getResult();
 
- private:
   std::stringbuf _buf;
   std::istream _input;
   std::shared_ptr<Grammar> _grammar;

@@ -45,7 +45,7 @@ TEST(BuilderTests, SimpleStreamTest) {
 
 TEST(BuilderTests, SimpleStringTest) {
   BuilderFromBNF builder("<S> ::= <S> \"a\" <S> \"b\" |");
-  auto grammar = builder.readRules().getResult();
+  auto grammar = builder.build();
   testGrammar(grammar);
   grammar = builder.build("<S> ::= <S> \"a\" <S> \"b\" | \n");
   testGrammar(grammar);
@@ -54,7 +54,7 @@ TEST(BuilderTests, SimpleStringTest) {
 void runBuilder(const std::string& str) {
   std::istringstream stream(str);
   BuilderFromBNF builder(stream);
-  builder.readRules().getResult();
+  builder.build();
 }
 
 TEST(BuilderTests, TestSyntaxCheck) {
