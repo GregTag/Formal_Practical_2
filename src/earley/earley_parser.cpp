@@ -45,6 +45,7 @@ void EarleyParser::initialize(size_t size) {
   _dynamics.assign(size + 1, prepared);
   _layers.assign(size + 1,
                  std::unordered_map<size_t, std::vector<Situation>>());
+  _layer_changed = false;
   add(Situation{_starting_rule, 0, 0}, 0);
 }
 
@@ -64,6 +65,7 @@ void EarleyParser::add(const Situation& situation, size_t input_pos) {
     _predict_queue.push(situation);
     _layers[input_pos][production.rule[situation.point_pos]].push_back(
         situation);
+    _layer_changed = true;
   } else {
     _scan_queue.push(situation);
   }
@@ -108,6 +110,7 @@ void EarleyParser::complete(size_t input_pos) {
       add(proposed_situation, input_pos);
     }
   }
+  _layer_changed = false;
   for (size_t nonterminal : _completed_nonterminals) {
     for (auto proposed_situation : _layers[input_pos][nonterminal]) {
       ++proposed_situation.point_pos;
@@ -122,7 +125,7 @@ size_t EarleyParser::getNextSymbol(const Situation& situation) {
 }
 
 bool EarleyParser::isChanging() {
-  return !_predict_queue.empty() || !_complete_queue.empty();
+  return _layer_changed || !_predict_queue.empty() || !_complete_queue.empty();
 }
 
 void EarleyParser::logSituation(const Situation& situation, size_t input_pos) {

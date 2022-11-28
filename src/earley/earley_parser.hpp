@@ -35,6 +35,7 @@ class EarleyParser : public Parser {
   // dp[origin_pos][rule_id][point_pos]
   std::vector<std::vector<std::vector<ssize_t>>> _dynamics;
   std::vector<std::unordered_map<size_t, std::vector<Situation>>> _layers;
+  bool _layer_changed;
   std::unordered_set<size_t> _completed_nonterminals;
   std::queue<Situation> _scan_queue;
   std::queue<Situation> _predict_queue;

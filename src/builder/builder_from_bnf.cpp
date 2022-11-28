@@ -49,8 +49,9 @@ BuilderFromBNF& BuilderFromBNF::readRules() {
     if (stream.get() != '<' || std::getline(stream, token, '>').eof())
       throw std::invalid_argument("BNF syntax error");
     symbol_id = _grammar->addSymbol(token, true);
-    stream >> token;
-    if (token != "::=") throw std::invalid_argument("BNF syntax error");
+    stream >> std::ws;
+    if (stream.get() != ':' || stream.get() != ':' || stream.get() != '=')
+      throw std::invalid_argument("BNF syntax error");
 
     while (!(stream >> std::ws).eof()) {
       switch (stream.get()) {
