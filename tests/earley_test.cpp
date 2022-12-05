@@ -17,7 +17,7 @@ TEST(EarleyTests, SimpleTest) {
   auto grammar1 = builder.build("<S> ::= \"a\"<S>\"b\"<S>|");
   EarleyParser parser1(grammar1);
 
-  std::vector<std::string> correct{"ab",     "aabb",   "aabbab",
+  std::vector<std::string> correct{"",       "ab",     "aabb",        "aabbab",
                                    "abaabb", "ababab", "aaabbbabaabb"};
   std::vector<std::string> not_correct{"ba", "aba", "abba", "ababa",
                                        "aaaaaabbbbb"};
