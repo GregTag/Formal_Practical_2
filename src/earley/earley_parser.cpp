@@ -2,17 +2,7 @@
 
 EarleyParser::EarleyParser(std::shared_ptr<Grammar> grammar)
     : _output(nullptr), _grammar(std::move(grammar)) {
-  const auto& productions = _grammar->getProductions();
-  for (size_t i = 0; i < productions.size(); ++i) {
-    _rule_map[productions[i].symbol].push_back(i);
-  }
-
-  size_t start = _grammar->getStartingNonterminal();
-  if (_rule_map[start].size() == 1) {
-    _starting_rule = _rule_map[start].front();
-  } else {
-    _starting_rule = _grammar->makeSingleStartRule("S'");
-  }
+  _starting_rule = _grammar->makeSingleStartRule("S'");
 }
 
 bool EarleyParser::recognize(const std::string& word) {
@@ -92,7 +82,7 @@ void EarleyParser::predict(size_t input_pos) {
     Situation situation = _predict_queue.front();
     _predict_queue.pop();
     size_t nonterminal = getNextSymbol(situation);
-    for (size_t rule_id : _rule_map[nonterminal]) {
+    for (size_t rule_id : _grammar->getRules(nonterminal)) {
       add(Situation{rule_id, 0, input_pos}, input_pos);
     }
   }

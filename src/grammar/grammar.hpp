@@ -25,12 +25,16 @@ class Grammar {
   size_t makeSingleStartRule(const std::string&);
   const GrammarAlphabet& getAlphabet() const;
   const std::vector<Production>& getProductions() const;
+  const std::vector<size_t>& getRules(size_t) const;
   size_t getStartingNonterminal() const;
 
  private:
   void checkRule(const std::vector<size_t>&);
+  template <typename Arg>
+  void addProductionImpl(size_t, Arg&&);
 
   size_t _starting_nonterminal = 0;
   std::shared_ptr<GrammarAlphabet> _alphabet;
   std::vector<Production> _productions;
+  std::unordered_map<size_t, std::vector<size_t>> _rule_map;
 };

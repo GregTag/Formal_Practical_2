@@ -9,6 +9,7 @@ class SimpleAlphabet : public GrammarAlphabet {
   SimpleAlphabet() = default;
 
   size_t add(const std::string& symbol, bool is_nonterminal) override;
+  size_t size() const override;
   size_t getId(const std::string& symbol) const override;
   bool testSymbol(const std::string& symbol) const override;
   const std::string& getSymbol(size_t id) const override;

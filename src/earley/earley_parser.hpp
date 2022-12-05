@@ -30,7 +30,6 @@ class EarleyParser : public Parser {
 
   std::ostream _output;
   std::shared_ptr<Grammar> _grammar;
-  std::unordered_map<size_t, std::vector<size_t>> _rule_map;
   size_t _starting_rule;
   // dp[origin_pos][rule_id][point_pos]
   std::vector<std::vector<std::vector<ssize_t>>> _dynamics;

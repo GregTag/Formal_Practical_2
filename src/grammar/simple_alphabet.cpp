@@ -14,6 +14,8 @@ size_t SimpleAlphabet::add(const std::string& symbol, bool is_nonterminal) {
   return _symbols.size() - 1;
 }
 
+size_t SimpleAlphabet::size() const { return _symbols.size(); }
+
 size_t SimpleAlphabet::getId(const std::string& symbol) const {
   return _symbol_ids.at(symbol);
 }

@@ -16,13 +16,11 @@ size_t Grammar::addSymbol(const std::string& symbol, bool is_nonterminal) {
 }
 
 void Grammar::addProduction(size_t symbol, const std::vector<size_t>& rule) {
-  checkRule(rule);
-  _productions.emplace_back(symbol, rule);
+  addProductionImpl(symbol, rule);
 }
 
 void Grammar::addProduction(size_t symbol, std::vector<size_t>&& rule) {
-  checkRule(rule);
-  _productions.emplace_back(symbol, std::move(rule));
+  addProductionImpl(symbol, std::move(rule));
 }
 
 void Grammar::setStartingNonterminal(size_t nonterminal) {
@@ -32,12 +30,13 @@ void Grammar::setStartingNonterminal(size_t nonterminal) {
 }
 
 size_t Grammar::makeSingleStartRule(const std::string& symbol) {
+  if (_rule_map[_starting_nonterminal].size() == 1)
+    return _rule_map[_starting_nonterminal].front();
   if (_alphabet->testSymbol(symbol))
     throw std::invalid_argument("New nonterminal cannot be from the alphabet.");
-  size_t s_new = addSymbol(symbol, true);
-  size_t s_old = getStartingNonterminal();
-  addProduction(s_new, std::vector<size_t>(1, s_old));
-  setStartingNonterminal(s_new);
+  size_t new_nonterminal = addSymbol(symbol, true);
+  addProduction(new_nonterminal, std::vector<size_t>(1, _starting_nonterminal));
+  _starting_nonterminal = new_nonterminal;
   return _productions.size() - 1;
 }
 
@@ -45,6 +44,10 @@ const GrammarAlphabet& Grammar::getAlphabet() const { return *_alphabet; }
 
 const std::vector<Production>& Grammar::getProductions() const {
   return _productions;
+}
+
+const std::vector<size_t>& Grammar::getRules(size_t symbol) const {
+  return _rule_map.at(symbol);
 }
 
 size_t Grammar::getStartingNonterminal() const {
@@ -61,4 +64,11 @@ void Grammar::checkRule(const std::vector<size_t>& rule) {
   } catch (...) {
     throw std::invalid_argument("Incorrect rule.");
   }
+}
+
+template <typename Arg>
+void Grammar::addProductionImpl(size_t symbol, Arg&& rule) {
+  checkRule(rule);
+  _productions.emplace_back(symbol, std::forward<Arg>(rule));
+  _rule_map[symbol].push_back(_productions.size() - 1);
 }
