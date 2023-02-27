@@ -40,8 +40,8 @@ BuilderFromBNF& BuilderFromBNF::readRules() {
   size_t symbol_id;
   std::vector<size_t> rule;
 
-  while (!_input.eof()) {
-    std::getline(_input, line, '\n');
+  while (std::getline(_input, line, '\n')) {
+    stream.clear();
     stream.str(std::move(line));
 
     if ((stream >> std::ws).eof()) continue;
